@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cookie Clicker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="shop.css">
+</head>
+<body>
+    <div id="Points">
+        <p>Cookies: <span id="pointsValue">0</span></p>
+    </div>
+    <div id="cookie">
+        <img src="images/cookie.jpg" alt="Cookie">
+    </div>
+    <div id="leaderboardDisplay"></div>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <a href="powerUps.html">⚡ Power-Ups</a>
+        <a href="index.html">🍪 Clicker</a>
+        <a href="shop.html">🛒 Shop</a>
+        <a href="leaderBoard.html">🏆 Leaderboard</a>
+        <a href="achievements.html">🌟 Achievements</a>
+    </div>
+
+    <!-- Firebase App (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Database (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <!-- Add this before other scripts -->
+    <script src="darkMode.js"></script>
+    <!-- Existing scripts -->
+    <script src="firebaseConfig.js"></script>
+    <script src="leaderboard.js"></script>
+    <script src="script.js"></script>
+    <!-- Add the status display -->
+    <script src="statusDisplay.js"></script>
+</body>
+</html>

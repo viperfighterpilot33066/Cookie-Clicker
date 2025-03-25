@@ -1,0 +1,115 @@
+/* General body styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* General leaderboard container styles */
+#leaderboardDisplay {
+    width: 80%;
+    margin: 20px auto;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Leaderboard entry styles */
+#leaderboardDisplay div {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    color: #333;
+    min-height: 44px;
+    align-items: center;
+}
+
+#leaderboardDisplay div:last-child {
+    border-bottom: none; /* Remove border for the last entry */
+}
+
+/* Highlight for hover effect */
+#leaderboardDisplay div:hover {
+    background-color: #f0f0f0;
+}
+
+/* Title styles */
+#leaderboardTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+
+/* Responsive design for larger screens */
+@media (min-width: 1024px) {
+    #leaderboardDisplay {
+        width: 70%;
+        font-size: 18px;
+    }
+
+    #leaderboardTitle {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    #leaderboardDisplay {
+        width: 95%;
+        margin: 10px auto;
+        padding: 10px;
+    }
+
+    #leaderboardDisplay div {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    #leaderboardTitle {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    body {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    #leaderboardDisplay {
+        width: 95%;
+        margin: 10px auto;
+    }
+
+    #leaderboardDisplay div {
+        font-size: 14px;
+        padding: 12px 8px;
+    }
+
+    #loginContainer input,
+    #loginContainer button {
+        width: 100%;
+        margin: 8px 0;
+        padding: 12px;
+        font-size: 16px;
+    }
+}
+
+/* Touch-friendly inputs */
+input, 
+button {
+    min-height: 44px;
+    font-size: 16px;
+}

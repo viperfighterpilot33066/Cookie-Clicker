@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cookie Clicker - Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="shop.css">
+</head>
+<body>
+    <div id="Points">
+        <p>Cookies: <span id="pointsValue">0</span></p>
+    </div>
+
+    <div class="shop-container">
+        <div class="shop-tabs">
+            <button id="shopTabBtn" class="tab-button active">Shop</button>
+            <button id="inventoryTabBtn" class="tab-button">Inventory</button>
+        </div>
+
+        <div id="shopTab" class="tab-content active">
+            <h2>Cookie Shop</h2>
+            <div class="shop-categories">
+                <button id="petsBtn" class="category-button active">Pets</button>
+                <button id="effectsBtn" class="category-button">Effects</button>
+            </div>
+            
+            <div id="petItems" class="shop-items">
+                <!-- Pet items will be loaded here by JavaScript -->
+            </div>
+            
+            <div id="effectItems" class="shop-items hidden">
+                <!-- Effect items will be loaded here by JavaScript -->
+            </div>
+        </div>
+
+        <div id="inventoryTab" class="tab-content">
+            <h2>Your Inventory</h2>
+            <div class="inventory-categories">
+                <button id="invPetsBtn" class="category-button active">Pets</button>
+                <button id="invEffectsBtn" class="category-button">Effects</button>
+            </div>
+
+            <div id="petInventory" class="inventory-items">
+                <!-- Owned pets will be displayed here -->
+                <p class="empty-inventory">You don't own any pets yet.</p>
+            </div>
+            
+            <div id="effectInventory" class="inventory-items hidden">
+                <!-- Owned effects will be displayed here -->
+                <p class="empty-inventory">You don't own any effects yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <a href="powerUps.html">⚡ Power-Ups</a>
+        <a href="index.html">🍪 Clicker</a>
+        <a href="shop.html">🛒 Shop</a>
+        <a href="leaderBoard.html">🏆 Leaderboard</a>
+        <a href="achievements.html">🌟 Achievements</a>
+    </div>
+
+    <!-- Firebase scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <!-- Add this before other scripts -->
+    <script src="darkMode.js"></script>
+    <script src="firebaseConfig.js"></script>
+    <script src="shop.js"></script>
+    <script src="script.js"></script>
+    <script src="achievements.js"></script>
+</body>
+</html>

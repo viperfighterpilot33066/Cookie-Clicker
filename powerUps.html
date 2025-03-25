@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cookie Clicker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="powerUps.css"> <!-- Ensure this path is correct -->
+</head>
+<body>
+    <!-- Firebase App (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Database (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <h2>Power-Ups</h2>
+    <br>
+    <div id="powerUpsContainer" class="grid-layout">
+        <div id="autoClicker" class="power-up">
+            <img src="images/AutoClicker.png" alt="AutoClicker">
+            <p>Cost: <span id="autoClickerUpgradeCost">-10</span> Cookies</p>
+            <p>Upgrades: <span id="autoClickerUpgradeCount">0</span></p>
+        </div>
+        <div id="CurserUpgrade" class="power-up">
+            <img src="images/curser-upgrade.jpg" alt="curser-upgrade">
+            <p>Cost: <span id="curserUpgradePrice">-100</span> Cookies</p>
+            <!-- Remove the "/5" limit so only the upgrade count is shown -->
+            <p>Upgrades: <span id="curserUpgradeCount"></span></p>
+        </div>
+        <div id="shieldPowerUpDiv" class="power-up">
+            <img src="images/shield.jpg" alt="sheild">
+            <p>Cost: -15000 points</p>
+            <p>Protects you 6 hours.</p>
+        </div>
+        <div id="rebirthContainer" class="power-up">
+            <div class="rebirth-icon">⟲</div>
+            <h3>Rebirth</h3>
+            <p>Cost: 100,000 points</p>
+            <p>Current Rebirth Level: <span id="rebirthLevel">0</span></p>
+            <button id="rebirthButton" class="rebirth-button">Rebirth</button>
+        </div>
+    </div>
+
+    <br>
+    <h3>Sabotage Power-Ups</h3>
+    <div id="powerUps">
+        <div id="sabotagePowerUpDiv" class="power-up">
+            <img src="images/Sab2.jpg" alt="sabotagePowerUp">
+            <p>Cost: -30,000 points</p>
+            <p>Takes 30% of targets points</p>
+        </div>
+    </div>
+    <div class="navbar">
+        <a href="powerUps.html">⚡ Power-Ups</a>
+        <a href="index.html">🍪 Clicker</a>
+        <a href="shop.html">🛒 Shop</a>
+        <a href="leaderBoard.html">🏆 Leaderboard</a>
+        <a href="achievements.html">🌟 Achievements</a>
+    </div>
+    <!-- Your JavaScript files -->
+    <script src="firebaseConfig.js"></script>
+    <script src="autoClicker.js"></script>
+    <script src="curserUpgrade.js"></script>
+    <script src="script.js"></script>
+    <!-- Notice: Do NOT add a duplicate shield event listener here -->
+    <script src="powerUps.js"></script>
+    <!-- Add shield.js so the shield functionality is activated -->
+    <script src="shield.js"></script>
+    <script src="achievements.js"></script>
+    <script src="rebirth.js"></script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+:root {
+    --primary-color: #333;
+    --secondary-color: #575757;
+    --bg-color: #f9f9f9;
+    --accent-color: #fff;
+    --text-color: #333;
+    --border-color: #ccc;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --transition-speed: 0.3s;
+    --hover-color: #f0f0f0;
+    --button-bg: #f0f0f0;
+    --button-hover: #e0e0e0;
+}
+
+/* General Page Styling */
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, var(--bg-color), #eaeaea);
+    padding-bottom: 70px; /* Space for the navbar */
+    color: var(--primary-color);
+}
+
+/* Apply theme colors */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Points Display */
+#points {
+    display: flex;
+    position: relative;
+    text-align: left;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 1.1em;
+}
+
+/* Cookie Container */
+#cookie {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: var(--accent-color);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 400px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    border-radius: 10px;
+}
+
+/* Cookie Image */
+#cookie img {
+    display: inline-block;
+    border-radius: 72px;
+    width: 150px;
+    height: auto;
+    transition: transform 0.2s ease;
+}
+
+#cookie img:hover {
+    transform: scale(1.05);
+}
+
+/* Pulse animation for cookie click feedback */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+#cookie img:active {
+    animation: pulse 0.4s ease;
+}
+
+/* AutoClicker and Cursor Upgrade Elements */
+#autoClicker, #CurserUpgrade {
+    text-align: left;
+    border: 2px solid var(--primary-color);
+    margin-right: 10%;
+    padding: 10px;
+    cursor: pointer;
+    display: inline-block;
+    background-color: #f0f0f0;
+    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+#autoClicker:hover, #CurserUpgrade:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.02);
+}
+
+/* Responsive adjustments for AutoClicker and Cursor Upgrade */
+@media (max-width: 768px) {
+    #autoClicker, #CurserUpgrade {
+        margin-right: 5%;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1024px) {
+    #autoClicker, #CurserUpgrade {
+        margin-right: 15%;
+        font-size: 16px;
+    }
+}
+
+/* Updated Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    padding: 15px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: #555;
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background-color: #555;
+}
+
+/* Mobile-friendly navbar */
+.navbar {
+    padding: 8px 0;
+    background-color: var(--primary-color);
+}
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    font-weight: bold;
+    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.navbar a:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Responsive adjustments for Points and Navbar */
+@media (max-width: 480px) {
+    body {
+        padding-bottom: 60px;
+    }
+
+    #points {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 15px;
+        font-size: 16px;
+    }
+
+    #cookie {
+        padding: 15px;
+        margin: 15px auto;
+    }
+
+    #cookie img {
+        width: 120px;
+    }
+
+    .navbar {
+        padding: 5px 0;
+    }
+
+    .navbar a {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 768px) {
+    #cookie img {
+        width: 120px;
+        height: 120px;
+    }
+
+    #Points {
+        font-size: 1.2em;
+        padding: 15px;
+    }
+}
+
+@media (min-width: 769px) {
+    #cookie img {
+        width: 150px;
+        height: 150px;
+    }
+
+    #Points {
+        font-size: 1.5em;
+    }
+}
+
+/* Touch-friendly buttons and interactions */
+@media (hover: none) {
+    #cookie img:active {
+        transform: scale(0.95);
+    }
+
+    .navbar a {
+        padding: 12px 20px;
+    }
+}
+
+/* Touch-friendly buttons */
+button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+}
+
+/* Add smooth transition for theme changes */
+body, .navbar, #cookie, button, input {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions for theme changes */
+body * {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+/* Prevent transition on page load */
+.no-transition * {
+    transition: none !important;
+}
