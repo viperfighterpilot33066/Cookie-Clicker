@@ -596,60 +596,97 @@ class ShopSystem {
     }
 
     buyItem(item, itemType) {
-        const points = parseInt(localStorage.getItem('points')) || 0;
+        // Get current points using PointsManager if available
+        let points;
+        if (typeof PointsManager !== 'undefined') {
+            points = PointsManager.getPoints();
+        } else {
+            points = parseInt(localStorage.getItem('points')) || 0;
+        }
         
         if (points >= item.price) {
-            // Deduct points
-            const newPoints = points - item.price;
-            localStorage.setItem('points', newPoints);
+            // Record purchase timestamp to protect local value
+            localStorage.setItem('lastPurchaseTimestamp', Date.now().toString());
             
-            // Update points display
-            const pointsValue = document.getElementById('pointsValue');
-            if (pointsValue) {
-                pointsValue.textContent = newPoints;
-            }
-            
-            // Track spending for achievements
-            const shopSpending = parseInt(localStorage.getItem('shopSpending') || '0') + item.price;
-            localStorage.setItem('shopSpending', shopSpending);
-            
-            if (itemType === 'pets') {
-                // Add pet to inventory
-                this.inventory.pets.push({...item});
+            // Deduct points using PointsManager if available
+            let deductionSuccessful = false;
+            if (typeof PointsManager !== 'undefined') {
+                // Use PointsManager to acquire sync lock and update server
+                if (typeof PointsManager.acquireSyncLock === 'function') {
+                    PointsManager.acquireSyncLock(5000); // 5-second lock
+                }
+                deductionSuccessful = PointsManager.subtractPoints(item.price);
+                
+                // Also force a direct server update
+                if (typeof PointsManager.directServerUpdate === 'function') {
+                    const newPoints = points - item.price;
+                    PointsManager.directServerUpdate(newPoints);
+                }
             } else {
-                // For effects, we handle them directly
-                if (item.effect.duration) {
-                    // Timed effect
-                    this.activateEffect(item);
-                } else {
-                    // Instant effect
-                    this.applyInstantEffect(item);
+                // Fallback to direct localStorage manipulation
+                const newPoints = points - item.price;
+                localStorage.setItem('points', newPoints);
+                deductionSuccessful = true;
+                
+                // Update points display
+                const pointsValue = document.getElementById('pointsValue');
+                if (pointsValue) {
+                    pointsValue.textContent = newPoints;
                 }
                 
-                // Track used effects for achievements
-                let usedEffects = JSON.parse(localStorage.getItem('usedEffects') || '[]');
-                if (!usedEffects.includes(item.id)) {
-                    usedEffects.push(item.id);
-                    localStorage.setItem('usedEffects', JSON.stringify(usedEffects));
+                // Update server directly if possible
+                if (typeof window.syncPointsToLeaderboard === 'function') {
+                    window.syncPointsToLeaderboard(newPoints);
                 }
-                
-                // Track effect usage count
-                let effectCounts = JSON.parse(localStorage.getItem('effectCounts') || '{}');
-                effectCounts[item.id] = (effectCounts[item.id] || 0) + 1;
-                localStorage.setItem('effectCounts', JSON.stringify(effectCounts));
             }
             
-            // Save inventory
-            this.saveInventory();
-            
-            // Update UI
-            this.renderShopItems();
-            this.renderInventory();
-            
-            // Show success message
-            this.showNotification(`${item.name} purchased!`);
+            // Process the purchase if deduction was successful
+            if (deductionSuccessful) {
+                // Track spending for achievements
+                const shopSpending = parseInt(localStorage.getItem('shopSpending') || '0') + item.price;
+                localStorage.setItem('shopSpending', shopSpending);
+                
+                if (itemType === 'pets') {
+                    // Add pet to inventory
+                    this.inventory.pets.push({...item});
+                } else {
+                    // For effects, we handle them directly
+                    if (item.effect.duration) {
+                        // Timed effect
+                        this.activateEffect(item);
+                    } else {
+                        // Instant effect
+                        this.applyInstantEffect(item);
+                    }
+                    
+                    // Track used effects for achievements
+                    let usedEffects = JSON.parse(localStorage.getItem('usedEffects') || '[]');
+                    if (!usedEffects.includes(item.id)) {
+                        usedEffects.push(item.id);
+                        localStorage.setItem('usedEffects', JSON.stringify(usedEffects));
+                    }
+                    
+                    // Track effect usage count
+                    let effectCounts = JSON.parse(localStorage.getItem('effectCounts') || '{}');
+                    effectCounts[item.id] = (effectCounts[item.id] || 0) + 1;
+                    localStorage.setItem('effectCounts', JSON.stringify(effectCounts));
+                }
+                
+                // Save inventory
+                this.saveInventory();
+                
+                // Update UI
+                this.renderShopItems();
+                this.renderInventory();
+                
+                // Show success message
+                this.showNotification(`${item.name} purchased!`);
+                
+                return true;
+            }
         } else {
             this.showNotification('Not enough cookies!', true);
+            return false;
         }
     }
 
@@ -843,15 +880,44 @@ class ShopSystem {
         petInventory.innerHTML = '';
         if (this.inventory.pets.length > 0) {
             this.inventory.pets.forEach(pet => {
-                const isEquipped = this.equippedPet === pet.id;
-                const petFromList = this.pets.find(p => p.id === pet.id);
-                const emoji = petFromList ? this.createEmojiElement(petFromList.emoji, petFromList.bgColor) : '';
+                const isEquipped = this.equippedPet === pet.id || this.inventory.equippedPet === pet.name;
+                
+                // Fix for undefined issues - ensure we have all required data
+                const petName = pet.name || "Unknown Pet";
+                const petDescription = pet.description || "No description available";
+                let petEmoji = '';
+                let petBgColor = '#cccccc';
+                
+                // Try to find the pet in the master list to get its emoji and color
+                const petFromList = this.pets.find(p => p.id === pet.id || p.name === pet.name);
+                if (petFromList) {
+                    petEmoji = petFromList.emoji;
+                    petBgColor = petFromList.bgColor;
+                }
+                
+                // Create the pet element for display
                 const petElement = document.createElement('div');
                 petElement.className = `inventory-item ${isEquipped ? 'equipped' : ''}`;
+                
+                // If we have an icon or imageData, use that
+                let petImageHtml = '';
+                if (pet.icon) {
+                    petImageHtml = `<img src="${pet.icon}" alt="${petName}" style="width:80px;height:80px;">`;
+                } else if (pet.imageData) {
+                    petImageHtml = `<img src="${pet.imageData}" alt="${petName}" style="width:80px;height:80px;">`;
+                } else if (petEmoji) {
+                    // Fallback to emoji if no custom image
+                    petImageHtml = `
+                        <div class="item-image emoji-placeholder" 
+                             style="background-color:${petBgColor};display:flex;align-items:center;justify-content:center;font-size:50px;">
+                            ${petEmoji}
+                        </div>`;
+                }
+                
                 petElement.innerHTML = `
-                    ${emoji.outerHTML}
-                    <h3>${pet.name}</h3>
-                    <p class="item-description">${pet.description}</p>
+                    ${petImageHtml}
+                    <h3>${petName}</h3>
+                    <p class="item-description">${petDescription}</p>
                     ${isEquipped ? '<div class="equipped-badge">Equipped</div>' : ''}
                     <button class="equip-button ${isEquipped ? 'unequip-button' : ''}">${isEquipped ? 'Unequip' : 'Equip'}</button>
                 `;
@@ -859,9 +925,9 @@ class ShopSystem {
                 const equipButton = petElement.querySelector('.equip-button');
                 equipButton.addEventListener('click', () => {
                     if (isEquipped) {
-                        this.unequipItem('pet', pet.id);
+                        this.unequipItem('pet', pet.id || pet.name);
                     } else {
-                        this.equipItem('pet', pet.id);
+                        this.equipItem('pet', pet.id || pet.name);
                     }
                 });
 

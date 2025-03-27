@@ -1,0 +1,15 @@
+Version 1.0.0 - March 26, 2025 
+- NEW! added promo section for promo codes
+- remade the leaderboard layout
+- anyone who helped with this project gets a free promo
+- Added real-time leaderboard updates
+- Fixed login/signup screen display
+- Improved pet system with better bonuses
+- Added sound effects for clicks and rewards
+- Fixed points not syncing between pages
+- New achievement system with 30+ achievements
+- NEW! added sound effects to the game
+- NEW! added dark mode
+- fixed UI a bit
+- fixed some general bugs 
+- if you encounter any problems please report them

@@ -5,16 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cookie Clicker</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="shop.css">
 </head>
 <body>
+    <div class="settings-menu">
+        <div class="settings-header">
+            <h2>Settings</h2>
+            <button id="closeSettings">×</button>
+        </div>
+        <div class="settings-content">
+            <div class="settings-section">
+                <label class="switch">
+                    <span>Dark Mode</span>
+                    <input type="checkbox" id="darkModeToggle">
+                </label>
+            </div>
+            <div class="promo-section">
+                <h3>Promo Code</h3>
+                <input type="text" id="promoInput" placeholder="Enter promo code">
+                <button id="redeemPromo">Redeem</button>
+                <p id="promoMessage"></p>
+            </div>
+        </div>
+    </div>
+    
+    <button id="settingsButton" class="settings-button">⚙️</button>
+
     <div id="Points">
         <p>Cookies: <span id="pointsValue">0</span></p>
     </div>
+    
     <div id="cookie">
         <img src="images/cookie.jpg" alt="Cookie">
     </div>
-    <div id="leaderboardDisplay"></div>
+
+    <!-- Make sure class names match what's used in statusDisplay.js -->
+    <div id="bonusStatusBar" class="status-bar">
+        <div class="status-section">
+            <span class="status-label">Pet:</span>
+            <span class="pet-name">None</span>
+            <span class="pet-bonus"></span>
+            <span class="pet-tier"></span>
+        </div>
+        <div class="status-section">
+            <span class="status-label">Effect:</span>
+            <span class="effect-name">None</span>
+            <span class="effect-time"></span>
+            <span class="effect-tier"></span>
+        </div>
+        <div class="status-section points-section">
+            <span class="status-label">Click:</span>
+            <span class="points-value" id="statusPointsValue">1</span>
+        </div>
+    </div>
 
     <!-- Navigation bar -->
     <div class="navbar">
@@ -25,18 +67,73 @@
         <a href="achievements.html">🌟 Achievements</a>
     </div>
 
-    <!-- Firebase App (v8) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <!-- Firebase Database (v8) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+   
+    
+    <!-- Hidden container for leaderboard data -->
+    <div id="hiddenLeaderboardContainer" style="display: none;"></div>
 
-    <!-- Add this before other scripts -->
+    <!-- Load scripts in the appropriate order -->
+    <!-- Load GameInitializer first to ensure clean state -->
+    <script src="gameInitializer.js"></script>
+    
     <script src="darkMode.js"></script>
-    <!-- Existing scripts -->
-    <script src="firebaseConfig.js"></script>
-    <script src="leaderboard.js"></script>
+    <script src="audioHelper.js"></script>
+    <script src="pointsManager.js"></script>
+    <script src="uiInitializer.js"></script>
+    <script src="eventCleanup.js"></script>
+    <script src="promoVerifier.js"></script>
+    <script src="gameSync.js"></script>
+    
+    <!-- Import Firebase modules directly in index.html -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        
+        // Make firebase available globally
+        window.firebaseApp = initializeApp({
+            apiKey: "AIzaSyD1vSGtQ5IO1pEgn2BOf1kQFks22NZ-Vzs",
+            authDomain: "leaderboard-10f42.firebaseapp.com",
+            projectId: "leaderboard-10f42",
+            storageBucket: "leaderboard-10f42.firebasestorage.app",
+            messagingSenderId: "1097500483722",
+            appId: "1:1097500483722:web:f901c50a5ea065ee9f8d73",
+            measurementId: "G-T2MMSV42YY"
+        });
+        
+        // Create a compatibility layer for code expecting the older firebase object
+        window.firebase = {
+            database: function() { 
+                return {
+                    ref: function(path) {
+                        const dbRef = ref(getDatabase(window.firebaseApp), path);
+                        return {
+                            get: () => new Promise((resolve) => onValue(dbRef, resolve, { onlyOnce: true })),
+                            once: (event, callback) => onValue(dbRef, callback, { onlyOnce: true }),
+                            update: (data) => update(dbRef, data),
+                            set: (data) => set(dbRef, data)
+                        };
+                    }
+                };
+            }
+        };
+        console.log("Firebase initialized globally with compatibility layer");
+    </script>
+    
+    <script type="module" src="leaderboard.js"></script>
     <script src="script.js"></script>
-    <!-- Add the status display -->
+    <script src="autoClicker.js"></script>
+    <script src="cursorUpgrade.js"></script>
+    <script src="createImages.js"></script>
+    <script src="promoCodes.js"></script>
+    <script src="petSystem.js"></script>
     <script src="statusDisplay.js"></script>
+    <script src="clickEffects.js"></script>
+    <script src="goldenCookie.js"></script>
+    <script src="petTracker.js"></script>
+    <script src="ember-dragon.js"></script>
+    <script src="changelog.js"></script>
+    <script src="rebirth.js"></script>
+    <script src="antiCheat.js"></script>
 </body>
 </html>

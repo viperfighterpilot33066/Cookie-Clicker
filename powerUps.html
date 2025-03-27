@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cookie Clicker</title>
+    <title>Cookie Clicker - Power Ups</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="powerUps.css"> <!-- Ensure this path is correct -->
+    <!-- Include darkMode.js early -->
+    <script src="darkMode.js"></script>
+    <script src="audioHelper.js"></script>
+    <script src="uiInitializer.js"></script>
 </head>
 <body>
     <!-- Firebase App (v8) -->
@@ -13,60 +17,98 @@
     <!-- Firebase Database (v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-    <h2>Power-Ups</h2>
-    <br>
+    <h1>Power-Ups</h1>
+    
     <div id="powerUpsContainer" class="grid-layout">
-        <div id="autoClicker" class="power-up">
-            <img src="images/AutoClicker.png" alt="AutoClicker">
-            <p>Cost: <span id="autoClickerUpgradeCost">-10</span> Cookies</p>
-            <p>Upgrades: <span id="autoClickerUpgradeCount">0</span></p>
+        <!-- AutoClicker -->
+        <div id="autoClicker" class="power-up-card">
+            <img src="images/autoClicker.png" alt="Auto Clicker">
+            <h3>Auto Clicker</h3>
+            <p>Automatically clicks for you!</p>
+            <p>Status: <span id="autoClickerStatus">Not Purchased</span></p>
+            <p>Upgrade: <span id="autoClickerUpgradeCount">0</span> / <span id="autoClickerMaxUpgrades">5</span></p>
+            <p>Cost: <span id="autoClickerCost">10</span> cookies</p>
         </div>
-        <div id="CurserUpgrade" class="power-up">
-            <img src="images/curser-upgrade.jpg" alt="curser-upgrade">
-            <p>Cost: <span id="curserUpgradePrice">-100</span> Cookies</p>
-            <!-- Remove the "/5" limit so only the upgrade count is shown -->
-            <p>Upgrades: <span id="curserUpgradeCount"></span></p>
+
+        <!-- Cursor Upgrade -->
+        <div id="CursorUpgrade" class="power-up-card">
+            <img src="images/cursorUpgrade.png" alt="Cursor Upgrade">
+            <h3>Cursor Upgrade</h3>
+            <p>Increases your clicking power!</p>
+            <p>Level: <span id="cursorUpgradeLevel">0</span></p>
+            <p>Cost: <span id="cursorUpgradeCost">100</span> cookies</p>
         </div>
-        <div id="shieldPowerUpDiv" class="power-up">
-            <img src="images/shield.jpg" alt="sheild">
-            <p>Cost: -15000 points</p>
-            <p>Protects you 6 hours.</p>
+        
+        <!-- Cost Reducer (Adding it back) -->
+        <div id="costReducer" class="power-up-card">
+            <img src="images/costReducer.png" alt="Cost Reducer">
+            <h3>Cost Reducer</h3>
+            <p>Reduces the cost of all other upgrades!</p>
+            <p>Level: <span id="costReducerLevel">0</span> / 3</p>
+            <p>Effect: <span id="costReducerEffect">5</span>% discount</p>
+            <p>Cost: <span id="costReducerCost">500</span> cookies</p>
+            <button id="upgradeCostReducer" class="upgrade-button">Upgrade</button>
         </div>
-        <div id="rebirthContainer" class="power-up">
-            <div class="rebirth-icon">⟲</div>
+        
+        <!-- Rebirth Button (Adding it back) -->
+        <div id="rebirthContainer" class="power-up-card">
+            <img src="images/rebirth.png" alt="Rebirth">
             <h3>Rebirth</h3>
-            <p>Cost: 100,000 points</p>
-            <p>Current Rebirth Level: <span id="rebirthLevel">0</span></p>
-            <button id="rebirthButton" class="rebirth-button">Rebirth</button>
+            <p>Reset your progress but gain permanent bonuses!</p>
+            <p>Current Level: <span id="rebirthLevel">0</span></p>
+            <p>Cost: <span id="rebirthCost">100000</span> cookies</p>
+            <button id="rebirthButton" class="upgrade-button">Rebirth</button>
         </div>
     </div>
 
-    <br>
-    <h3>Sabotage Power-Ups</h3>
-    <div id="powerUps">
-        <div id="sabotagePowerUpDiv" class="power-up">
-            <img src="images/Sab2.jpg" alt="sabotagePowerUp">
-            <p>Cost: -30,000 points</p>
-            <p>Takes 30% of targets points</p>
+    <h2>Special Power-Ups</h2>
+    <div id="powerUps" class="grid-layout">
+        <!-- Shield Power-Up -->
+        <div id="shieldPowerUpDiv" class="power-up-card">
+            <img src="images/shield.png" alt="Shield">
+            <h3>Shield</h3>
+            <p>Protects you from sabotage for 6 hours!</p>
+            <p>Cost: -15000 points</p>
+        </div>
+
+        <!-- Sabotage Power-Up -->
+        <div id="sabotagePowerUpDiv" class="power-up-card">
+            <img src="images/sabotage.png" alt="Sabotage">
+            <h3>Sabotage</h3>
+            <p>Reduces another player's points by 30%!</p>
+            <p>Cost: -30000 points</p>
         </div>
     </div>
+
+    <!-- Display current points -->
+    <div id="pointsDisplay" class="points-display">
+        Points: <span id="pointsValue">0</span>
+    </div>
+
+    <!-- Navigation bar -->
     <div class="navbar">
-        <a href="powerUps.html">⚡ Power-Ups</a>
+        <a href="powerUps.html" class="active">⚡ Power-Ups</a>
         <a href="index.html">🍪 Clicker</a>
         <a href="shop.html">🛒 Shop</a>
         <a href="leaderBoard.html">🏆 Leaderboard</a>
         <a href="achievements.html">🌟 Achievements</a>
     </div>
-    <!-- Your JavaScript files -->
+    
+    <!-- Your JavaScript files - Add clickEffects.js before autoClicker.js -->
     <script src="firebaseConfig.js"></script>
+    <script src="pointsManager.js"></script>
+    <script src="clickEffects.js"></script> <!-- Add new click effects script -->
+    <script src="createImages.js"></script>
+    <script src="petSystem.js"></script>
     <script src="autoClicker.js"></script>
-    <script src="curserUpgrade.js"></script>
+    <script src="cursorUpgrade.js"></script>  <!-- Changed from curserUpgrade.js -->
     <script src="script.js"></script>
-    <!-- Notice: Do NOT add a duplicate shield event listener here -->
     <script src="powerUps.js"></script>
-    <!-- Add shield.js so the shield functionality is activated -->
     <script src="shield.js"></script>
     <script src="achievements.js"></script>
     <script src="rebirth.js"></script>
+    <script src="powerUpTiers.js"></script>
+    <script src="statusDisplay.js"></script>
+    <script src="goldenCookie.js"></script>
 </body>
 </html>

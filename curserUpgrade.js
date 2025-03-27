@@ -4,7 +4,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const curserUpgrade = document.querySelector("#CurserUpgrade");
 
     if (!curserUpgrade) {
-        console.error("CurserUpgrade element not found in the DOM.");
+        // Don't show error on pages where this element shouldn't exist
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('index.html') || currentPath === '/' || currentPath === '') {
+            console.error("CurserUpgrade element not found in the DOM.");
+        }
         return;
     }
 
@@ -23,21 +27,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const updateUI = () => {
         const curserUpgradePriceElement = document.getElementById("curserUpgradePrice");
-        const curserUpgradeCountElement = document.getElementById("curserUpgradeCount");
+        const cursorUpgradeLevelElement = document.getElementById("cursorUpgradeLevel");
+        const cursorUpgradeCostElement = document.getElementById("cursorUpgradeCost"); // Added for powerUps.html
+        const curserUpgradeCountElement = document.getElementById("curserUpgradeCount"); 
+
+        // Calculate next upgrade cost
+        const nextUpgradeCost = baseCost + (curserUpgradeActive * costIncrease);
 
         if (curserUpgradePriceElement) {
-            const nextUpgradeCost = baseCost + (curserUpgradeActive * costIncrease);
-            curserUpgradePriceElement.innerHTML = "-" + nextUpgradeCost;
+            curserUpgradePriceElement.innerHTML = nextUpgradeCost;
             console.log("Updated UI: Next upgrade cost:", nextUpgradeCost);
         }
 
+        // Update cursor upgrade cost in powerUps.html
+        if (cursorUpgradeCostElement) {
+            cursorUpgradeCostElement.textContent = nextUpgradeCost;
+            console.log("Updated UI: Cursor upgrade cost display in powerUps.html:", nextUpgradeCost);
+        }
+
+        // Update both possible level display elements
+        if (cursorUpgradeLevelElement) {
+            cursorUpgradeLevelElement.textContent = curserUpgradeActive;
+            console.log("Updated UI: Cursor upgrade level displayed:", curserUpgradeActive);
+        }
+        
+        // This is the element in powerUps.html
         if (curserUpgradeCountElement) {
-            curserUpgradeCountElement.innerHTML = curserUpgradeActive;
-            console.log("Updated UI: Current upgrades displayed:", curserUpgradeActive);
+            curserUpgradeCountElement.textContent = curserUpgradeActive;
+            console.log("Updated UI: Cursor upgrade count displayed:", curserUpgradeActive);
         }
     };
 
-    updateUI(); // Initialize UI on page load
+    // Initialize UI on page load
+    updateUI();
+
+    // Update UI whenever curserUpgradeActive changes in localStorage
+    window.addEventListener('storage', function(e) {
+        if (e.key === "curserUpgradeActive") {
+            curserUpgradeActive = parseInt(e.newValue) || 0;
+            updateUI();
+        }
+    });
 
     curserUpgrade.addEventListener("click", function () {
         // Re-fetch points and curserUpgradeActive from localStorage to ensure consistency

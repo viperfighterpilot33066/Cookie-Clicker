@@ -51,19 +51,19 @@ const achievements = {
         name: "Click Novice",
         description: "Upgrade cursor 3 times",
         reward: 150,
-        check: () => parseInt(localStorage.getItem('curserUpgradeActive')) >= 3
+        check: () => parseInt(localStorage.getItem('cursorUpgradeActive')) >= 3
     },
     clickerAdept: {
         name: "Click Adept",
         description: "Upgrade cursor 5 times",
         reward: 300,
-        check: () => parseInt(localStorage.getItem('curserUpgradeActive')) >= 5
+        check: () => parseInt(localStorage.getItem('cursorUpgradeActive')) >= 5
     },
     clickerMaster: {
         name: "Click Master",
         description: "Upgrade cursor 10 times",
         reward: 1000,
-        check: () => parseInt(localStorage.getItem('curserUpgradeActive')) >= 10
+        check: () => parseInt(localStorage.getItem('cursorUpgradeActive')) >= 10
     },
     autoBegin: {
         name: "Automation Begins",
@@ -178,7 +178,7 @@ const achievements = {
         reward: 200000,
         check: () => {
             const autoMax = parseInt(localStorage.getItem('autoClickerUpgradeCount')) >= 5;
-            const cursorMax = parseInt(localStorage.getItem('curserUpgradeActive')) >= 10;
+            const cursorMax = parseInt(localStorage.getItem('cursorUpgradeActive')) >= 10;
             return autoMax && cursorMax;
         }
     },
@@ -301,6 +301,22 @@ const achievements = {
             return parseInt(localStorage.getItem('goldenCookiesClicked') || '0') >= 50;
         }
     },
+    
+    // New achievement for floating golden cookies
+    floatingGold: {
+        name: "Floating Fortune",
+        description: "Click on 10 floating golden cookies",
+        reward: 5000,
+        check: () => parseInt(localStorage.getItem('goldenCookiesClicked') || '0') >= 10
+    },
+    
+    goldenMaster: {
+        name: "Golden Master",
+        description: "Earn 10,000 points from golden cookies",
+        reward: 20000,
+        check: () => parseInt(localStorage.getItem('goldenCookieEarnings') || '0') >= 10000
+    },
+    
     criticalCookie: {
         name: "Critical Cookie",
         description: "Get 100 critical clicks",
@@ -440,25 +456,49 @@ class AchievementManager {
     }
 
     showNotification(achievement) {
+        // Create notification element
         const notification = document.createElement('div');
         notification.className = 'achievement-notification';
+        
+        // Set content with more detailed information
         notification.innerHTML = `
             <h3>Achievement Unlocked!</h3>
-            <p>${achievement.name}</p>
-            <p>+${achievement.reward} points</p>
+            <div class="achievement-content">
+                <div class="achievement-icon">${achievement.icon || '🏆'}</div>
+                <div class="achievement-details">
+                    <div class="achievement-name">${achievement.name}</div>
+                    <div class="achievement-description">${achievement.description}</div>
+                    <div class="achievement-reward">+${achievement.reward} cookies earned!</div>
+                </div>
+            </div>
         `;
+        
+        // Add to document
         document.body.appendChild(notification);
         
-        // Add notification sound
-        const audio = new Audio('achievement.mp3'); // Optional: Add sound
-        audio.play().catch(e => console.log('Audio not supported'));
+        // Play reward sound
+        if (typeof AudioHelper !== 'undefined') {
+            AudioHelper.playNotificationSound(0.4);
+        } else {
+            // Fallback sound handling
+            try {
+                const audio = new Audio('audio/RewardSound.wav');
+                audio.volume = 0.4;
+                audio.play().catch(e => console.log('Audio not supported or allowed'));
+            } catch (err) {
+                console.log('Audio not supported');
+            }
+        }
         
-        // Animate and remove notification
-        notification.style.animation = 'slideIn 0.5s ease-out';
+        // Remove after delay
         setTimeout(() => {
-            notification.style.animation = 'slideOut 0.5s ease-in';
-            setTimeout(() => notification.remove(), 500);
-        }, 3000);
+            notification.classList.add('fadeout');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 500);
+        }, 5000); // Extended to 5 seconds for better readability
     }
 
     setupAutoCheck() {

@@ -1,52 +1,76 @@
 console.log("powerUps.js loaded"); // Debugging log
 
-// Use points from localStorage
-let points = parseInt(localStorage.getItem("points")) || 0; // Initialize points from localStorage
-
 // Initial cost of the sabotage power-up (set to 1 for testing)
 let sabotagePowerUpCost = 30000; // Changed from 1 to 30000
 // Initial cost of the shield power-up (set to 1 for testing)
 let shieldPowerUpCost = 15000; // Changed from 1 to 15000
 
-// Utility: update points in localStorage and DOM
-function updatePoints(newPoints) {
-    points = newPoints; // Update the points variable
-    localStorage.setItem("points", points); // Update localStorage
-    const pointsValue = document.getElementById("pointsValue");
-    if (pointsValue) {
-        pointsValue.textContent = points; // Update DOM
+// Clean up any status bar on power-ups page
+function removeStatusBarIfExists() {
+    const statusBar = document.getElementById('bonusStatusBar');
+    if (statusBar) {
+        statusBar.remove();
+        console.log("Removed status bar from power-ups page");
     }
 }
 
-// Fetch and display the current points on page load
-function initializePoints() {
-    console.log("Fetched points from localStorage:", points); // Debugging log
-    updatePoints(points); // Ensure the DOM is updated
-}
+// Call the function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', removeStatusBarIfExists);
 
-// Call initializePoints when the DOM is ready
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializePoints);
-} else {
-    initializePoints();
-}
+// Also add a mutation observer to remove the status bar if it gets added later
+const statusBarObserver = new MutationObserver(function(mutations) {
+    for (const mutation of mutations) {
+        if (mutation.addedNodes.length) {
+            for (const node of mutation.addedNodes) {
+                if (node.id === 'bonusStatusBar') {
+                    node.remove();
+                    console.log("Prevented status bar from being added to power-ups page");
+                }
+            }
+        }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    statusBarObserver.observe(document.body, { childList: true, subtree: true });
+});
 
 // Function to handle the purchase of the sabotage power-up
 function purchaseSabotagePowerUp() {
     console.log("Sabotage power-up div clicked.");
-    console.log("Current points from localStorage:", points); // Debugging log
-    if (points >= sabotagePowerUpCost) {
-        const updatedPoints = points - sabotagePowerUpCost;
-        updatePoints(updatedPoints); // Update points in localStorage and DOM
-        const sabotageCostElement = document.querySelector("#sabotagePowerUpDiv p:nth-child(2)");
-        if (sabotageCostElement) {
-            sabotageCostElement.textContent = "Cost: -1 point";
-        }
-        console.log("Sabotage power-up purchased successfully.");
-        // Trigger the screen to choose someone
-        showSabotageSelectionScreen();
+    
+    // Use PointsManager to get points if available
+    let points;
+    if (typeof PointsManager !== 'undefined') {
+        points = PointsManager.getPoints();
     } else {
-        alert("You do not have enough points to purchase this power-up.");
+        points = parseInt(localStorage.getItem("points")) || 0;
+    }
+    
+    console.log("Current points:", points); // Debug
+    
+    if (points >= sabotagePowerUpCost) {
+        // Use PointsManager to ensure consistent point handling
+        let deductionSuccessful = false;
+        if (typeof PointsManager !== 'undefined') {
+            deductionSuccessful = PointsManager.subtractPoints(sabotagePowerUpCost);
+        } else {
+            // Fallback to direct localStorage manipulation
+            points -= sabotagePowerUpCost;
+            localStorage.setItem("points", points);
+            deductionSuccessful = true;
+            
+            // Update display
+            const pointsValue = document.getElementById("pointsValue");
+            if (pointsValue) {
+                pointsValue.textContent = points;
+            }
+        }
+        
+        if (deductionSuccessful) {
+            // Show sabotage selection
+            showSabotageSelectionScreen();
+        }
     }
 }
 
@@ -174,20 +198,40 @@ function closeSabotageScreen() {
 // Function to handle the purchase of the shield power-up
 function purchaseShieldPowerUp() {
     console.log("Shield power-up div clicked.");
-    console.log("Current points from localStorage:", points); // Debugging log
-    if (points >= shieldPowerUpCost) {
-        const updatedPoints = points - shieldPowerUpCost;
-        updatePoints(updatedPoints); // Update points in localStorage and DOM
-        console.log("Activating shield protection for 6 hours...");
-        const shieldExpiration = Date.now() + 6 * 60 * 60 * 1000;
-        database.ref("shieldExpiration").set(shieldExpiration);
-        const shieldCostElement = document.querySelector("#shieldPowerUpDiv p:nth-child(2)");
-        if (shieldCostElement) {
-            shieldCostElement.textContent = `Cost: -${shieldPowerUpCost} points`;
-        }
-        alert("Shield activated! You are protected from sabotage for the next 6 hours.");
+    
+    // Use PointsManager to get points if available
+    let points;
+    if (typeof PointsManager !== 'undefined') {
+        points = PointsManager.getPoints();
     } else {
-        alert("You do not have enough points to purchase this power-up.");
+        points = parseInt(localStorage.getItem("points")) || 0;
+    }
+    
+    console.log("Current points:", points); // Debug
+    
+    if (points >= shieldPowerUpCost) {
+        // Use PointsManager to ensure consistent point handling
+        let deductionSuccessful = false;
+        if (typeof PointsManager !== 'undefined') {
+            deductionSuccessful = PointsManager.subtractPoints(shieldPowerUpCost);
+        } else {
+            // Fallback to direct localStorage manipulation
+            points -= shieldPowerUpCost;
+            localStorage.setItem("points", points);
+            deductionSuccessful = true;
+            
+            // Update display
+            const pointsValue = document.getElementById("pointsValue");
+            if (pointsValue) {
+                pointsValue.textContent = points;
+            }
+        }
+        
+        if (deductionSuccessful) {
+            console.log("Activating shield protection for 6 hours...");
+            const shieldExpiration = Date.now() + 6 * 60 * 60 * 1000;
+            database.ref("shieldExpiration").set(shieldExpiration);
+        }
     }
 }
 

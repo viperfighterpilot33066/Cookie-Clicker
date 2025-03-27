@@ -2,7 +2,8 @@
 #autoClicker,
 #CurserUpgrade,
 #shieldPowerUpDiv,
-#sabotagePowerUpDiv {
+#sabotagePowerUpDiv,
+#costReducer {
     text-align: left;               /* Align text to the left */
     border: 2px solid black;        /* Consistent border style */
     margin-right: 10%;              /* Consistent margin */
@@ -21,7 +22,8 @@
 #sabotagePowerUpDiv:hover,
 #autoClicker:hover,
 #CurserUpgrade:hover,
-#shieldPowerUpDiv:hover {
+#shieldPowerUpDiv:hover,
+#costReducer:hover {
     background-color: #e0e0e0;      /* Slightly darker background on hover */
     border-color: #888;             /* Subtle border color change */
     transform: scale(1.05);         /* Slight zoom effect on hover */
@@ -31,7 +33,8 @@
 #autoClicker img,
 #CurserUpgrade img,
 #sabotagePowerUpDiv img,
-#shieldPowerUpDiv img {
+#shieldPowerUpDiv img,
+#costReducer img {
     width: 120px;            /* Ensures the image fits the container */
     height: 120px;           /* Maintains aspect ratio */
     display: block;         /* Proper layout for spacing */
@@ -41,7 +44,8 @@
 #autoClicker p,
 #CurserUpgrade p,
 #sabotagePowerUpDiv p,
-#shieldPowerUpDiv p {
+#shieldPowerUpDiv p,
+#costReducer p {
     margin: 0;               /* Remove extra margins */
     padding: 0;              /* No additional padding */
     font-size: 14px;         /* Consistent font size */
@@ -54,7 +58,8 @@
     #autoClicker,
     #CurserUpgrade,
     #shieldPowerUpDiv,
-    #sabotagePowerUpDiv {
+    #sabotagePowerUpDiv,
+    #costReducer {
         margin-right: 5%;            /* Adjust margin for smaller screens */
         font-size: 14px;             /* Reduce font size */
     }
@@ -65,14 +70,15 @@
     #autoClicker,
     #CurserUpgrade,
     #shieldPowerUpDiv,
-    #sabotagePowerUpDiv {
+    #sabotagePowerUpDiv,
+    #costReducer {
         margin-right: 15%;           /* Add margin for larger screens */
         font-size: 16px;             /* Slightly increase font size */
     }
 }
 
 /* Grid layout for different screen sizes */
-#powerUpsContainer {
+#powerUpsContainer, #powerUps {
     display: grid;
     gap: 20px;
     padding: 15px;
@@ -82,7 +88,7 @@
 }
 
 @media (max-width: 768px) {
-    #powerUpsContainer {
+    #powerUpsContainer, #powerUps {
         grid-template-columns: 1fr;
     }
 
@@ -97,11 +103,84 @@
 }
 
 @media (min-width: 769px) {
-    #powerUpsContainer {
+    #powerUpsContainer, #powerUps {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 }
 
+/* Tier badge styling */
+.tier-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #ff9800;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 2;
+}
+
+/* Power-up container needs position relative for badge positioning */
+.power-up {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.power-up:hover {
+    transform: translateY(-5px);
+}
+
+.upgrade-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.upgrade-button:hover {
+    background-color: #45a049;
+}
+
+.upgrade-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .tier-badge {
+    background-color: #ff5722;
+}
+
+[data-theme="dark"] .upgrade-button {
+    background-color: #388e3c;
+}
+
+[data-theme="dark"] .upgrade-button:hover {
+    background-color: #2e7d32;
+}
+
+[data-theme="dark"] .upgrade-button:disabled {
+    background-color: #555555;
+}
+
+/* Remove duplicate .power-up definition that may be causing conflicts */
+/* 
 .power-up {
     width: 100%;
     box-sizing: border-box;
@@ -113,16 +192,14 @@
     background-color: #f9f9f9;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+*/
 
+/* Fix the image styling for better consistency */
 .power-up img {
     width: 80px;
     height: 80px;
     object-fit: cover;
     max-width: 100%;
-    border-radius: 5px;
-}
-
-.power-up p {
     font-size: 16px;
     margin: 8px 0;
 }
@@ -136,7 +213,8 @@
     #autoClicker,
     #CurserUpgrade,
     #shieldPowerUpDiv,
-    #sabotagePowerUpDiv {
+    #sabotagePowerUpDiv,
+    #costReducer {
         margin-right: 0;
         margin-bottom: 15px;
         width: 100%;
@@ -175,4 +253,214 @@
 
 [data-theme="dark"] .rebirth-button:hover {
     background-color: #2e7d32;
+}
+
+/* Enhanced PowerUps Page Styling */
+
+/* Grid layout for displaying power-ups in a responsive grid */
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+/* Stylish cards for power-ups */
+.power-up-card {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.power-up-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Power-up images */
+.power-up-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1));
+    transition: transform 0.2s ease;
+}
+
+.power-up-card:hover img {
+    transform: scale(1.1);
+}
+
+/* Power-up title */
+.power-up-card h3 {
+    font-size: 20px;
+    margin: 0 0 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Power-up description */
+.power-up-card p {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* Status highlighting */
+#autoClickerStatus {
+    font-weight: bold;
+}
+
+#autoClickerStatus:contains("Active") {
+    color: #4CAF50;
+}
+
+/* Page headings */
+h1, h2 {
+    text-align: center;
+    color: #333;
+    margin: 30px 0 15px;
+}
+
+h1 {
+    font-size: 36px;
+    margin-top: 40px;
+}
+
+h2 {
+    font-size: 24px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background-color: #4CAF50;
+    border-radius: 2px;
+}
+
+/* Points display */
+.points-display {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+#pointsValue {
+    color: #4CAF50;
+}
+
+/* Special styles for sabotage and shield power-ups */
+#sabotagePowerUpDiv {
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+}
+
+#sabotagePowerUpDiv h3 {
+    color: #d32f2f;
+}
+
+#shieldPowerUpDiv {
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+}
+
+#shieldPowerUpDiv h3 {
+    color: #2e7d32;
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .power-up-card {
+    background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .power-up-card h3 {
+    color: #f0f0f0;
+}
+
+[data-theme="dark"] .power-up-card p {
+    color: #ccc;
+}
+
+[data-theme="dark"] h1, 
+[data-theme="dark"] h2 {
+    color: #f0f0f0;
+}
+
+[data-theme="dark"] #sabotagePowerUpDiv {
+    background-color: #3e2723;
+    border: 1px solid #5d4037;
+}
+
+[data-theme="dark"] #shieldPowerUpDiv {
+    background-color: #1b5e20;
+    border: 1px solid #2e7d32;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .grid-layout {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .power-up-card {
+        padding: 15px;
+    }
+    
+    h1 {
+        font-size: 28px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+}
+
+/* Status and timer styles for shield */
+.shield-active {
+    background-color: #81c784 !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+.timer-text {
+    color: #fff;
+    background-color: #4CAF50;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
 }
